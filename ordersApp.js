@@ -1,23 +1,16 @@
 const express = require("express");
 const app = express();
-
-
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-
-const cors= require ('cors');
-
 const mongoose = require("mongoose");
-// const path = require ('path');
+const path = require ('path');
+
 
 //Routes
-
 const ordersRoutes = require("./api/ordersRoutes");
 
 
-
-
-
+//DataBase
 mongoose.connect( process.env.database, { useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.set('useCreateIndex', true)
 const db = mongoose.connection;
@@ -48,7 +41,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 
 //Cors
-
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -63,16 +55,15 @@ app.use((req, res, next) => {
 });
 
 
-
-// Set Static Folder
+//Set Static Folder
 app.use(express.static(path.join(__dirname,'../client')));
 
 
-// Routes which should handle requests
-
+//Routes which should handle requests
 app.use('/orders', ordersRoutes);
 
 
+//Express App Error
 app.use((req, res, next) => {
   const error = new Error("Not found");
   error.status = 404;
@@ -87,5 +78,6 @@ app.use((error, req, res, next) => {
     }
   });
 });
+
 
 module.exports = app;
